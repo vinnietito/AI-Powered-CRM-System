@@ -42,7 +42,7 @@ const start = async () => {
             console.log(`TTP CRM API is running on http://localhost:${PORT}`)
         });
     } catch (error) {
-        console.log("Failed to start server:", err.message);
+        console.log("Failed to start server:", error.message);
         process.exit(1);
     }
 };
