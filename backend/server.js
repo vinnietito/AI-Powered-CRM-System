@@ -7,6 +7,8 @@ import helmet from "helmet";
 import { connectDB } from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
+import authRoutes from "./routes/auth.routes.js";
+
 const app = express();
 
 // Middleware
@@ -20,11 +22,12 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") app.use(morgan("dev"));
 
-
 // Routes
 app.get("/api/health", (req, res) => 
     res.json({ success: true, status: "ok", service: "TTP CRM API" })
 );
+
+app.use("/api/auth", authRoutes);
 
 
 // Error Handling Middleware
