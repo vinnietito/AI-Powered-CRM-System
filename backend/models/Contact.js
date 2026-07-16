@@ -8,7 +8,11 @@ const contactSchema = new mongoose.Schema(
             required: true,
             index: true,
         },
-        name: { type: String, required: [true, "Contact name is required"], trim: true },
+        name: { 
+            type: String, 
+            required: [true, "Contact name is required"], 
+            trim: true, 
+        },
         email: { type: String, trim: true, lowercase: true, default: "" },
         phone: { type: String, trim: true, default: "" },
         company: { type: String, trim: true, default: "" },
