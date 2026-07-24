@@ -5,7 +5,8 @@ import {
     getLead,
     createLead,
     updateLead,
-    deleteLead
+    deleteLead,
+    reorderLeads
 } from '../controllers/lead.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 

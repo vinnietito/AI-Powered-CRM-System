@@ -1,4 +1,4 @@
-import { lead } from "../models/Lead.js";
+import { Lead } from "../models/Lead.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 
@@ -18,7 +18,7 @@ export const getLeads = asyncHandler(async (req, res) => {
     res.json({ success: true, count: leads.length, leads });
 });
 
-export const getLeadById = asyncHandler(async (req, res) => {
+export const getLead = asyncHandler(async (req, res) => {
     const lead = await Lead.findOne({ _id: req.params.id, owner: req.user._id });
     if (!lead) throw new ApiError(404, "Lead not found");
     res.json({ success: true, lead });
@@ -29,7 +29,7 @@ export const createLead = asyncHandler(async (req, res) => {
     res.status(201).json({ success: true, lead });
 });
 
-export const updatedLead = asyncHandler(async (req, res) => {
+export const updateLead = asyncHandler(async (req, res) => {
     const { owner, ...updates } = req.body;
 
     const lead = await Lead.findOneAndUpdate(
@@ -42,7 +42,7 @@ export const updatedLead = asyncHandler(async (req, res) => {
 });
 
 export const deleteLead = asyncHandler(async (req, res) => {
-    const lead = await Lad.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+    const lead = await Lead.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
     if (!lead) throw new ApiError(404, "Lead not found");
     res.json({ success: true, message: "Lead deleted"});
 });
