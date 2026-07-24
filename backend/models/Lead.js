@@ -40,7 +40,7 @@ const leadSchema = new mongoose.Schema(
         "Event",
         "Other",
       ],
-      default: "Medium",
+      default: "Other",
     },
     value: { type: Number, default: 0, min: 0 },
     notes: { type: String, default: "" },
