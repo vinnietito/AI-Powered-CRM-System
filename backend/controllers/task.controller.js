@@ -25,20 +25,35 @@ export const createTask = asyncHandler(async (req, res) => {
 export const updateTask = asyncHandler(async (req, res) => {
     const { owner, ...updates } = req.body;
 
-    if (updates.status === "Completed" && !updates.completeAt) {
-        updates.completeAt = new Date();
-    }
-    if (updates.status && !updates.completeAt) {
-        updates.completeAt = null;
+    if (updates.status === "Completed") {
+        updates.completedAt = new Date();
+    } else if (
+        updates.status === "Pending" ||
+        updates.status === "In Progress"
+    ) {
+        updates.completedAt = null;
     }
 
     const task = await Task.findOneAndUpdate(
-        { _id: req.params.id, owner: req.user._id },
+        {
+            _id: req.params.id,
+            owner: req.user._id,
+        },
         updates,
-        { new: true, runValidators: true }
+        {
+            new: true,
+            runValidators: true,
+        }
     );
-    if (!task) throw new ApiError(404, "Task not found");
-    res.json({ success: true, task });
+
+    if (!task) {
+        throw new ApiError(404, "Task not found");
+    }
+
+    res.json({
+        success: true,
+        task,
+    });
 });
 
 export const deleteTask = asyncHandler(async (req, res) => {
