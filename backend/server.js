@@ -28,6 +28,13 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") app.use(morgan("dev"));
 
 // Routes
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "TTP CRM API is running",
+    });
+});
+
 app.get("/api/health", (req, res) => 
     res.json({ success: true, status: "ok", service: "TTP CRM API" })
 );

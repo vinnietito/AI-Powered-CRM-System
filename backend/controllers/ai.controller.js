@@ -2,7 +2,7 @@ import { Lead } from "../models/Lead.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import {
-    generateLeadSummarry,
+    generateLeadSummary,
     generateEmail,
     generateSalesInsights,
     isAIConfigured,
