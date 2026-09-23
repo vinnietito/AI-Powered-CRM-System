@@ -25,6 +25,8 @@ const getClient = () => {
 const MODEL = () =>
     process.env.GEMINI_MODEL || "gemini-3.6-flash";
 
+const USD_TO_KES_RATE = 129.5;
+
 export const isAIConfigured = () =>
     Boolean(process.env.GEMINI_API_KEY);
 
@@ -48,6 +50,22 @@ const isRetryableError = (err) => {
         message.includes("429") ||
         message.includes("RESOURCE_EXHAUSTED") ||
         message.includes("temporarily unavailable")
+    );
+};
+
+const isQuotaError = (err) => {
+    const message = err?.message || "";
+    const status =
+        err?.status ||
+        err?.code ||
+        err?.error?.status ||
+        err?.error?.code;
+
+    return (
+        status === 429 ||
+        message.includes("RESOURCE_EXHAUSTED") ||
+        message.includes("quota") ||
+        message.includes("Quota exceeded")
     );
 };
 
@@ -91,6 +109,13 @@ const generateJSON = async (prompt, schema) => {
                 `Gemini JSON error (attempt ${attempt + 1}/${maxRetries + 1}):`,
                 err?.message || err
             );
+
+            if (isQuotaError(err)) {
+                throw new ApiError(
+                    429,
+                    "Gemini API quota exceeded. Wait for the quota to reset or enable billing for the Google AI project."
+                );
+            }
 
             /*
              * If this is not a temporary Gemini error,
@@ -173,6 +198,13 @@ const generateText = async (
                 err?.message || err
             );
 
+            if (isQuotaError(err)) {
+                throw new ApiError(
+                    429,
+                    "Gemini API quota exceeded. Wait for the quota to reset or enable billing for the Google AI project."
+                );
+            }
+
             if (!isRetryableError(err)) {
                 throw new ApiError(
                     502,
@@ -218,7 +250,7 @@ Lead details:
 - Company: ${lead.company || "N/A"}
 - Email: ${lead.email || "N/A"}
 - Current pipeline stage: ${lead.status || "New"}
-- Potential deal value: $${lead.value || 0}
+- Potential deal value: KSh ${((Number(lead.value) || 0) * USD_TO_KES_RATE).toLocaleString("en-KE", { maximumFractionDigits: 0 })}
 - Source: ${lead.source || "Unknown"}
 - Notes: ${lead.notes || "None"}
 
